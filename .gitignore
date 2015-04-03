@@ -21,12 +21,6 @@ lib64
 # Installer logs
 pip-log.txt
 
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-htmlcov
-
 # Translations
 *.mo
 
@@ -34,6 +28,8 @@ htmlcov
 .mr.developer.cfg
 .project
 .pydevproject
+notebook/
+*.desktop
 
 # Complexity
 output/*.html
