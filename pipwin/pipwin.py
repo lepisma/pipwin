@@ -75,7 +75,7 @@ def build_cache():
             # arch = win32 / win_amd64 / any
             arch = details[4]
             arch = arch.split(".")[0]
-            # ver = cpXX / pyX
+            # ver = cpXX / pyX / pyXX
             ver = details[2]
             if data.has_key(details[0]):
                 data[details[0]].update({ver + "-" + arch: url})
@@ -98,6 +98,7 @@ def filter_packages(data):
     ver = version_info[:2]
     verlist.append("cp" + str(ver[0]) + str(ver[1]))
     verlist.append("py" + str(ver[0]))
+    verlist.append("py" + str(ver[0]) + str(ver[1]))
     verlist.append("py2.py3")
 
     archlist.append("any")
