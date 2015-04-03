@@ -2,15 +2,15 @@
 pipwin
 ===============================
 
-.. image:: https://pypip.in/version/pipwin/badge.svg
+.. image:: https://img.shields.io/pypi/v/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: Latest Version
     
-.. image:: https://pypip.in/download/pipwin/badge.svg
+.. image:: https://img.shields.io/pypi/dm/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: Downloads
   
-.. image:: https://pypip.in/license/pipwin/badge.svg
+.. image:: https://img.shields.io/pypi/l/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: License
 
