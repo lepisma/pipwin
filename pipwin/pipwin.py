@@ -3,14 +3,15 @@
 import pip
 import requests
 from bs4 import BeautifulSoup
-from os.path import expanduser, join, isfile
+from os.path import expanduser, join, isfile, exists
+import os
 import json
 import struct
 from sys import version_info
 from itertools import product
 
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
-
+HEADER = {"User-Agent": "Mozilla/5.0"}
 
 def parse_url(ml, mi):
     """
@@ -54,7 +55,7 @@ def build_cache():
 
     data = {}
     
-    req = requests.get(MAIN_URL)
+    req = requests.get(MAIN_URL, headers=HEADER)
     soup = BeautifulSoup(req.text)
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
@@ -196,7 +197,27 @@ class PipwinCache(object):
         Install a package
         """
 
-        pip.main(["install", self.sys_data[package]])
+        print ("Downloading package")
+        url = self.sys_data[package]
+        wheel_name = url.split("/")[-1]
+        res = requests.get(url, headers=HEADER, stream=True)
+        home_dir = expanduser("~")
+        pipwin_dir = join(home_dir, "pipwin")
+
+        if not exists(pipwin_dir):
+            os.makedirs(pipwin_dir)
+        
+        wheel_file = join(pipwin_dir, wheel_name)
+
+        wheel_handle = open(wheel_file, "wb")
+        for block in res.iter_content(chunk_size=1024):
+            wheel_handle.write(block)
+            wheel_handle.flush()
+        wheel_handle.close()
+
+        pip.main(["install", wheel_file])
+
+        os.remove(wheel_file)
 
     def uninstall(self, package):
         """

@@ -3,6 +3,11 @@
 History
 -------
 
+0.1.2 (2015-06-05)
+---------------------
+
+* Fix issue while installing wheels from direct url
+
 0.1.1 (2015-04-03)
 ---------------------
 

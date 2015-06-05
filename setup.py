@@ -22,7 +22,7 @@ requirements = [
 
 setup(
     name="pipwin",
-    version="0.1.1",
+    version="0.1.2",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme + "\n\n" + history,
     author="lepisma",
