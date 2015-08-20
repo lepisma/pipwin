@@ -2,3 +2,4 @@ wheel
 argparse
 beautifulsoup4
 requests
+pyprind

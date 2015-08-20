@@ -9,6 +9,7 @@ import json
 import struct
 from sys import version_info
 from itertools import product
+import pyprind
 
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 HEADER = {"User-Agent": "Mozilla/5.0"}
@@ -200,7 +201,7 @@ class PipwinCache(object):
         print ("Downloading package")
         url = self.sys_data[package]
         wheel_name = url.split("/")[-1]
-        res = requests.get(url, headers=HEADER, stream=True)
+        
         home_dir = expanduser("~")
         pipwin_dir = join(home_dir, "pipwin")
 
@@ -209,10 +210,16 @@ class PipwinCache(object):
         
         wheel_file = join(pipwin_dir, wheel_name)
 
+        res = requests.get(url, headers=HEADER, stream=True)
+        length = res.headers.get("content-length")
+        chunk = 1024
+        bar = pyprind.ProgBar(int(length) / chunk)
+        
         wheel_handle = open(wheel_file, "wb")
-        for block in res.iter_content(chunk_size=1024):
+        for block in res.iter_content(chunk_size=chunk):
             wheel_handle.write(block)
             wheel_handle.flush()
+            bar.update()
         wheel_handle.close()
 
         pip.main(["install", wheel_file])

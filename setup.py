@@ -17,12 +17,13 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     "argparse",
     "requests",
-    "beautifulsoup4"
+    "beautifulsoup4",
+    "pyprind"
 ]
 
 setup(
     name="pipwin",
-    version="0.1.2",
+    version="0.1.3",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme + "\n\n" + history,
     author="lepisma",
