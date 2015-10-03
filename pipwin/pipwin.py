@@ -12,7 +12,7 @@ from itertools import product
 import pyprind
 
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
-HEADER = {"User-Agent": "Mozilla/5.0"}
+HEADER = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
 
 def parse_url(ml, mi):
     """
@@ -33,16 +33,16 @@ def parse_url(ml, mi):
         setTimeout(function(){dl1(ml,mi)},1500);
     }
     """
-    
+
     # Reform >, < and &
     mi = mi.replace("&lt;", "<")
     mi = mi.replace("&gt;", ">")
     mi = mi.replace("&amp;", "&")
-    
+
     route = "";
     for character in mi:
         route += chr(ml[ord(character) - 48])
-        
+
     return MAIN_URL + route
 
 def build_cache():
@@ -55,7 +55,7 @@ def build_cache():
     """
 
     data = {}
-    
+
     req = requests.get(MAIN_URL, headers=HEADER)
     soup = BeautifulSoup(req.text)
     links = soup.find(class_="pylibs").find_all("a")
@@ -70,7 +70,7 @@ def build_cache():
             # Details = [package, version, pyversion, --, arch]
             details = url.split("/")[-1].split("-")
             details[0] = details[0].lower().replace("_", "-")
-            
+
             # Not using EXEs and ZIPs
             if len(details) != 5:
                 continue
@@ -85,7 +85,7 @@ def build_cache():
                 data[details[0]] = {ver + "-" + arch: url}
 
     return data
-            
+
 
 def filter_packages(data):
     """
@@ -110,7 +110,7 @@ def filter_packages(data):
         archlist.append("win_amd64")
 
     checklist = map("-".join, list(product(verlist, archlist)))
-    
+
     for key in data.keys():
         presence = map(data[key].has_key, checklist)
         try:
@@ -119,7 +119,7 @@ def filter_packages(data):
             # Version not found
             continue
         sys_data[key] = data[key][checklist[id]]
-        
+
     return sys_data
 
 
@@ -141,14 +141,14 @@ class PipwinCache(object):
 
         home_dir = expanduser("~")
         self.cache_file = join(home_dir, ".pipwin")
-        
+
         if isfile(self.cache_file) and not refresh:
             with open(self.cache_file, "rb") as fp:
                 self.data = json.load(fp)
         else:
             print("Building cache. Hang on . . .")
             self.data = build_cache()
-            
+
             with open(self.cache_file, "wb") as fp:
                 json.dump(self.data, fp,
                           sort_keys=True,
@@ -158,7 +158,7 @@ class PipwinCache(object):
         if not refresh:
             # Create a package list for the system
             self.sys_data = filter_packages(self.data)
-            
+
     def print_list(self):
         """
         Print the list of packages available for system
@@ -184,7 +184,7 @@ class PipwinCache(object):
 
         if exact_match:
             return [exact_match, package]
-        
+
         found = []
         for pack in self.sys_data.keys():
             if package in pack:
@@ -201,25 +201,29 @@ class PipwinCache(object):
         print ("Downloading package")
         url = self.sys_data[package]
         wheel_name = url.split("/")[-1]
-        
+
         home_dir = expanduser("~")
         pipwin_dir = join(home_dir, "pipwin")
 
         if not exists(pipwin_dir):
             os.makedirs(pipwin_dir)
-        
+
         wheel_file = join(pipwin_dir, wheel_name)
 
         res = requests.get(url, headers=HEADER, stream=True)
         length = res.headers.get("content-length")
         chunk = 1024
+
         bar = pyprind.ProgBar(int(length) / chunk)
-        
+        if int(length) < chunk:
+            bar = None
+
         wheel_handle = open(wheel_file, "wb")
         for block in res.iter_content(chunk_size=chunk):
             wheel_handle.write(block)
             wheel_handle.flush()
-            bar.update()
+            if bar is not None:
+                bar.update()
         wheel_handle.close()
 
         pip.main(["install", wheel_file])
@@ -233,7 +237,7 @@ class PipwinCache(object):
 
         pip.main(["uninstall", self.sys_data[package]])
 
-    
+
 def refresh():
     """
     Rebuild the cache

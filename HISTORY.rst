@@ -3,6 +3,12 @@
 History
 -------
 
+0.1.4 (2015-10-03)
+---------------------
+
+* Update user agent header. Fix 404 error on downloading.
+* Fix divide by zero bug in progress bar.
+
 0.1.3 (2015-08-20)
 ---------------------
 
