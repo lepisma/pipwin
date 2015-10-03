@@ -53,15 +53,15 @@ def main():
     else:
         if len(matches) > 0:
             print("Did you mean any of these ?\n")
-            print(" -> " + "\n -> ".join(matches))
+            print(" * " + "\n * ".join(matches))
+            print("")
         else:
             print("Package not found")
             print("Try `pipwin refresh`")
         sys.exit(0)
-        
+
     # Handle install/uninstall
     if args.command == "install":
         cache.install(args.package)
     elif args.command == "uninstall":
         cache.uninstall(args.package)
-    

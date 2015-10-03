@@ -3,6 +3,11 @@
 History
 -------
 
+0.2.0 (2015-10-03)
+---------------------
+
+* Package version selection option now available.
+
 0.1.4 (2015-10-03)
 ---------------------
 

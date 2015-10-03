@@ -69,7 +69,7 @@ def build_cache():
 
             # Details = [package, version, pyversion, --, arch]
             details = url.split("/")[-1].split("-")
-            details[0] = details[0].lower().replace("_", "-")
+            pkg = details[0].lower().replace("_", "-")
 
             # Not using EXEs and ZIPs
             if len(details) != 5:
@@ -77,12 +77,19 @@ def build_cache():
             # arch = win32 / win_amd64 / any
             arch = details[4]
             arch = arch.split(".")[0]
-            # ver = cpXX / pyX / pyXX
-            ver = details[2]
-            if data.has_key(details[0]):
-                data[details[0]].update({ver + "-" + arch: url})
+            # ver = cpXX / pyX / pyXXx
+            pkg_ver = details[1]
+            py_ver = details[2]
+
+            py_ver_key = py_ver + "-" + arch
+
+            if data.has_key(pkg):
+                if data[pkg].has_key(py_ver_key):
+                    data[pkg][py_ver_key].update({pkg_ver: url})
+                else:
+                    data[pkg][py_ver_key] = {pkg_ver: url}
             else:
-                data[details[0]] = {ver + "-" + arch: url}
+                data[pkg] = {py_ver_key: {pkg_ver: url}}
 
     return data
 
@@ -155,6 +162,8 @@ class PipwinCache(object):
                           indent=4,
                           separators=(",", ": "))
 
+            print("Done")
+
         if not refresh:
             # Create a package list for the system
             self.sys_data = filter_packages(self.data)
@@ -166,7 +175,8 @@ class PipwinCache(object):
 
         print("Listing packages available for your system\n")
         for package in self.sys_data.keys():
-            print " -> " + package
+            print " * " + package
+        print("")
 
     def search(self, package):
         """
@@ -198,8 +208,27 @@ class PipwinCache(object):
         Install a package
         """
 
-        print ("Downloading package")
-        url = self.sys_data[package]
+        url = None
+        if len(self.sys_data[package]) == 1:
+            url = self.sys_data[package].values()[0]
+        else:
+            print("Choose version to download.\n")
+            ver_keys = self.sys_data[package].keys()
+            for index, version in enumerate(ver_keys):
+                print "[" + str(index) + "] : " + str(version)
+
+            while True:
+                try:
+                    selected_id = int(raw_input("\nType version id shown in box : "))
+                    url = self.sys_data[package][ver_keys[selected_id]]
+                    break
+                except ValueError:
+                    print("Id should be a valid integer")
+                except IndexError:
+                    print("Id should be in the available range")
+
+
+        print ("Downloading package . . .")
         wheel_name = url.split("/")[-1]
 
         home_dir = expanduser("~")
