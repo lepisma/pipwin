@@ -15,7 +15,7 @@ pipwin
     :alt: License
 
 **pipwin** is a complementary tool for **pip** on Windows.
-**pipwin** installs unofficial python package binaries for windows provided by Christoph Gohlke here `http://www.lfd.uci.edu/~gohlke/pythonlibs/ <http://http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_
+**pipwin** installs unofficial python package binaries for windows provided by Christoph Gohlke here `http://www.lfd.uci.edu/~gohlke/pythonlibs/ <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_
 
 QuickStart
 ^^^^^^^^^^
