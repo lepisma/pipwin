@@ -29,10 +29,10 @@ QuickStart
 
    Did you mean any of these ?
 
-     \* cvxopt
-     \* opencv-python
-     \* abcview
-     \* cvxpy
+     * cvxopt
+     * opencv-python
+     * abcview
+     * cvxpy
 
    >> pipwin install opencv-python
 
