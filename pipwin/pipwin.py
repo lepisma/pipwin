@@ -11,6 +11,12 @@ from sys import version_info
 from itertools import product
 import pyprind
 
+# Python 2.X 3.X input
+try:
+    input = raw_input
+except NameError:
+    pass
+
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 
 HEADER = {
@@ -50,7 +56,7 @@ def parse_url(ml, mi):
     mi = mi.replace("&gt;", ">")
     mi = mi.replace("&amp;", "&")
 
-    route = "";
+    route = ""
     for character in mi:
         route += chr(ml[ord(character) - 48])
 
@@ -68,13 +74,13 @@ def build_cache():
     data = {}
 
     req = requests.get(MAIN_URL, headers=HEADER)
-    soup = BeautifulSoup(req.text, "lxml")
+    soup = BeautifulSoup(req.text, "html.parser")
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
             jsfun = link.get("onclick").split("\"")
             mlstr = jsfun[0].split("(")[1].strip()[1:-2]
-            ml = map(int, mlstr.split(","))
+            ml = list(map(int, mlstr.split(",")))
             mi = jsfun[1]
             url = parse_url(ml, mi)
 
@@ -94,8 +100,8 @@ def build_cache():
 
             py_ver_key = py_ver + "-" + arch
 
-            if data.has_key(pkg):
-                if data[pkg].has_key(py_ver_key):
+            if pkg in data.keys():
+                if py_ver_key in data[pkg].keys():
                     data[pkg][py_ver_key].update({pkg_ver: url})
                 else:
                     data[pkg][py_ver_key] = {pkg_ver: url}
@@ -127,10 +133,10 @@ def filter_packages(data):
     elif (struct.calcsize("P") * 8) == 64:
         archlist.append("win_amd64")
 
-    checklist = map("-".join, list(product(verlist, archlist)))
+    checklist = list(map("-".join, list(product(verlist, archlist))))
 
     for key in data.keys():
-        presence = map(data[key].has_key, checklist)
+        presence = list(map(lambda x: x in data[key].keys(), checklist))
         try:
             id = presence.index(True)
         except ValueError:
@@ -161,17 +167,19 @@ class PipwinCache(object):
         self.cache_file = join(home_dir, ".pipwin")
 
         if isfile(self.cache_file) and not refresh:
-            with open(self.cache_file, "rb") as fp:
-                self.data = json.load(fp)
+            print(self.cache_file)
+            with open(self.cache_file) as fp:
+                cache_dump = fp.read()
+            self.data = json.loads(cache_dump)
         else:
             print("Building cache. Hang on . . .")
             self.data = build_cache()
 
-            with open(self.cache_file, "wb") as fp:
-                json.dump(self.data, fp,
-                          sort_keys=True,
-                          indent=4,
-                          separators=(",", ": "))
+            with open(self.cache_file, "w") as fp:
+                fp.write(json.dumps(self.data,
+                                    sort_keys=True,
+                                    indent=4,
+                                    separators=(",", ": ")))
 
             print("Done")
 
@@ -186,7 +194,7 @@ class PipwinCache(object):
 
         print("Listing packages available for your system\n")
         for package in self.sys_data.keys():
-            print " * " + package
+            print(" * " + package)
         print("")
 
     def search(self, package):
@@ -224,13 +232,13 @@ class PipwinCache(object):
             url = self.sys_data[package].values()[0]
         else:
             print("Choose version to download.\n")
-            ver_keys = self.sys_data[package].keys()
+            ver_keys = list(self.sys_data[package].keys())
             for index, version in enumerate(ver_keys):
-                print "[" + str(index) + "] : " + str(version)
+                print("[" + str(index) + "] : " + str(version))
 
             while True:
                 try:
-                    selected_id = int(raw_input("\nType version id shown in box : "))
+                    selected_id = int(input("\nType version id shown in box : "))
                     url = self.sys_data[package][ver_keys[selected_id]]
                     break
                 except ValueError:

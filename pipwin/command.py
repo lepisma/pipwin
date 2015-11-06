@@ -3,7 +3,7 @@
 import argparse
 import sys
 import platform
-import pipwin
+from . import pipwin
 
 def main():
     """
