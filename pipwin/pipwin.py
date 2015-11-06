@@ -12,7 +12,18 @@ from itertools import product
 import pyprind
 
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
-HEADER = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"}
+
+HEADER = {
+    "Host": "www.lfd.uci.edu",
+    "Connection": "keep-alive",
+    "Cache-Control": "max-age=0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2552.0 Safari/537.36",
+    "DNT": "1",
+    "Accept-Encoding": "gzip, deflate, sdch",
+    "Accept-Language": "en-US,en;q=0.8"
+}
 
 def parse_url(ml, mi):
     """
