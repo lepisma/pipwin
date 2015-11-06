@@ -68,7 +68,7 @@ def build_cache():
     data = {}
 
     req = requests.get(MAIN_URL, headers=HEADER)
-    soup = BeautifulSoup(req.text)
+    soup = BeautifulSoup(req.text, "lxml")
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
