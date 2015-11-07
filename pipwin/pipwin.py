@@ -10,6 +10,7 @@ import struct
 from sys import version_info
 from itertools import product
 import pyprind
+import six
 
 # Python 2.X 3.X input
 try:
@@ -229,7 +230,7 @@ class PipwinCache(object):
 
         url = None
         if len(self.sys_data[package]) == 1:
-            url = self.sys_data[package].values()[0]
+            url = six.next(six.itervalues(self.sys_data[package]))
         else:
             print("Choose version to download.\n")
             ver_keys = list(self.sys_data[package].keys())
