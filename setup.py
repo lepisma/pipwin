@@ -37,5 +37,12 @@ setup(
     keywords="pipwin windows binaries",
     entry_points={
         "console_scripts": ["pipwin=pipwin.command:main"],
-    }
+    },
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Operating System :: Microsoft :: Windows",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3"
+    ]
 )
