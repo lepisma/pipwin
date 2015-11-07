@@ -3,3 +3,4 @@ argparse
 beautifulsoup4
 requests
 pyprind
+six

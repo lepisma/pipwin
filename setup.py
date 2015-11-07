@@ -8,24 +8,22 @@ except ImportError:
     from distutils.core import setup
 
 
-with open('README.rst') as readme_file:
+with open("README.rst") as readme_file:
     readme = readme_file.read()
-
-with open('HISTORY.rst') as history_file:
-    history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
     "argparse",
     "requests",
     "beautifulsoup4",
-    "pyprind"
+    "pyprind",
+    "six"
 ]
 
 setup(
     name="pipwin",
-    version="0.2.2",
+    version="0.2.3",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
-    long_description=readme + "\n\n" + history,
+    long_description=readme,
     author="lepisma",
     author_email="abhinav.tushar.vs@gmail.com",
     url="https://github.com/lepisma/pipwin",

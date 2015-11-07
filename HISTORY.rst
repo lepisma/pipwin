@@ -3,6 +3,10 @@
 History
 -------
 
+0.2.3 (2015-11-08)
+---------------------
+* Fix bug in Python 3 dict_values object indexing
+
 0.2.2 (2015-11-07)
 ---------------------
 
