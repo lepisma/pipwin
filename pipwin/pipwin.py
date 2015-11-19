@@ -257,7 +257,8 @@ class PipwinCache(object):
         if not exists(pipwin_dir):
             os.makedirs(pipwin_dir)
 
-        wheel_file = join(pipwin_dir, wheel_name)
+        fully_wheeled_name = os.path.splitext(wheel_name)[0] + '.whl'
+        wheel_file = join(pipwin_dir, fully_wheeled_name)
 
         res = requests.get(url, headers=HEADER, stream=True)
         length = res.headers.get("content-length")
