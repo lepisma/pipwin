@@ -14,14 +14,14 @@ with open("README.rst") as readme_file:
 requirements = [
     "argparse",
     "requests",
-    "beautifulsoup4",
+    "robobrowser",
     "pyprind",
     "six"
 ]
 
 setup(
     name="pipwin",
-    version="0.2.3",
+    version="0.2.4",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme,
     author="lepisma",

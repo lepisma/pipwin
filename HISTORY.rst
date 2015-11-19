@@ -3,6 +3,10 @@
 History
 -------
 
+0.2.4 (2015-11-20)
+--------------------
+* Switch to robobrowser for downloading main page (fixes 404)
+
 0.2.3 (2015-11-08)
 ---------------------
 * Fix bug in Python 3 dict_values object indexing

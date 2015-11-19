@@ -2,6 +2,7 @@
 
 import pip
 import requests
+from robobrowser import RoboBrowser
 from bs4 import BeautifulSoup
 from os.path import expanduser, join, isfile, exists
 import os
@@ -26,11 +27,13 @@ HEADER = {
     "Cache-Control": "max-age=0",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2552.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2552.0 Safari/537.3",
     "DNT": "1",
     "Accept-Encoding": "gzip, deflate, sdch",
-    "Accept-Language": "en-US,en;q=0.8"
+    "Accept-Language": "en-US,en;q=0.8",
+    "Referer": "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 }
+
 
 def parse_url(ml, mi):
     """
@@ -74,8 +77,8 @@ def build_cache():
 
     data = {}
 
-    req = requests.get(MAIN_URL, headers=HEADER)
-    soup = BeautifulSoup(req.text, "html.parser")
+    soup = RoboBrowser()
+    soup.open(MAIN_URL)
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
@@ -262,6 +265,9 @@ class PipwinCache(object):
         res = requests.get(url, headers=HEADER, stream=True)
         length = res.headers.get("content-length")
         chunk = 1024
+
+        print(url)
+        print(wheel_name)
 
         bar = pyprind.ProgBar(int(length) / chunk)
         if int(length) < chunk:
