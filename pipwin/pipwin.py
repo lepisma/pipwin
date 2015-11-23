@@ -66,6 +66,7 @@ def parse_url(ml, mi):
 
     return MAIN_URL + route
 
+
 def build_cache():
     """
     Get current data from the website http://www.lfd.uci.edu/~gohlke/pythonlibs/
@@ -226,11 +227,7 @@ class PipwinCache(object):
 
         return [exact_match, found]
 
-    def install(self, package):
-        """
-        Install a package
-        """
-
+    def _get_url(self, package):
         url = None
         if len(self.sys_data[package]) == 1:
             url = six.next(six.itervalues(self.sys_data[package]))
@@ -249,7 +246,10 @@ class PipwinCache(object):
                     print("Id should be a valid integer")
                 except IndexError:
                     print("Id should be in the available range")
+        return url
 
+    def _download(self, package):
+        url = self._get_url(package)
 
         print ("Downloading package . . .")
         wheel_name = url.split("/")[-1]
@@ -280,7 +280,16 @@ class PipwinCache(object):
             if bar is not None:
                 bar.update()
         wheel_handle.close()
+        return wheel_file
 
+    def download(self, package):
+        self._download(package)
+
+    def install(self, package):
+        """
+        Install a package
+        """
+        wheel_file = self._download(package)
         pip.main(["install", wheel_file])
 
         os.remove(wheel_file)

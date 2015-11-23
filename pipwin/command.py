@@ -5,6 +5,7 @@ import sys
 import platform
 from . import pipwin
 
+
 def main():
     """
     Command line entry point
@@ -16,6 +17,7 @@ def main():
     parser.add_argument("command",
                         choices=["install",
                                  "uninstall",
+                                 "download",
                                  "search",
                                  "list",
                                  "refresh"],
@@ -65,3 +67,5 @@ def main():
         cache.install(args.package)
     elif args.command == "uninstall":
         cache.uninstall(args.package)
+    elif args.command == "download":
+        cache.download(args.package)
