@@ -197,9 +197,9 @@ class PipwinCache(object):
         Print the list of packages available for system
         """
 
-        print("Listing packages available for your system\n")
+        print("# Listing packages available for your system\n")
         for package in self.sys_data.keys():
-            print(" * " + package)
+            print(package)
         print("")
 
     def search(self, package):
@@ -248,38 +248,40 @@ class PipwinCache(object):
                     print("Id should be in the available range")
         return url
 
-    def _download(self, package):
-        url = self._get_url(package)
-
-        print ("Downloading package . . .")
-        wheel_name = url.split("/")[-1]
-
+    def _get_pipwin_dir(self):
         home_dir = expanduser("~")
         pipwin_dir = join(home_dir, "pipwin")
-
         if not exists(pipwin_dir):
             os.makedirs(pipwin_dir)
+        return pipwin_dir
 
-        wheel_file = join(pipwin_dir, wheel_name)
+    def _get_progress_bar(self, length, chunk):
+        bar = pyprind.ProgBar(int(length) / chunk)
+        if int(length) < chunk:
+            return None
+        return bar
+
+    def _download(self, package):
+        url = self._get_url(package)
+        wheel_name = url.split("/")[-1]
+        print("Downloading package . . .")
+        print(url)
+        print(wheel_name)
+
+        wheel_file = join(self._get_pipwin_dir(), wheel_name)
 
         res = requests.get(url, headers=HEADER, stream=True)
         length = res.headers.get("content-length")
         chunk = 1024
 
-        print(url)
-        print(wheel_name)
+        bar = self._get_progress_bar(length, chunk)
 
-        bar = pyprind.ProgBar(int(length) / chunk)
-        if int(length) < chunk:
-            bar = None
-
-        wheel_handle = open(wheel_file, "wb")
-        for block in res.iter_content(chunk_size=chunk):
-            wheel_handle.write(block)
-            wheel_handle.flush()
-            if bar is not None:
-                bar.update()
-        wheel_handle.close()
+        with open(wheel_file, "wb") as wheel_handle:
+            for block in res.iter_content(chunk_size=chunk):
+                wheel_handle.write(block)
+                wheel_handle.flush()
+                if bar is not None:
+                    bar.update()
         return wheel_file
 
     def download(self, package):
