@@ -26,7 +26,7 @@ def _print_unresolved_match_msg(package, matches):
         print(" * " + "\n * ".join(matches))
         print("")
     else:
-        print("Package {} not found".format(package))
+        print("Package `{}` not found".format(package))
         print("Try `pipwin refresh`")
 
 
@@ -74,7 +74,7 @@ def main():
         if not exact_match:
             _print_unresolved_match_msg(package, matches)
             sys.exit(0)
-        print("Package found in cache")
+        print("Package `{}` found in cache".format(package))
         # Handle install/uninstall/download
         if args.command == "install":
             cache.install(package)
