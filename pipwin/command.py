@@ -6,14 +6,38 @@ import platform
 from . import pipwin
 
 
+def _package_names(args):
+    if args.file:
+        with open(args.file, 'r') as fid:
+            for package in fid.readlines():
+                if package and not package.startswith('#'):
+                    yield package.strip()
+    elif not args.package:
+        print("Provide a package name")
+        sys.exit(0)
+    else:
+        yield args.package
+    return
+
+
+def _print_unresolved_match_msg(package, matches):
+    if len(matches) > 0:
+        print("Did you mean any of these ?\n")
+        print(" * " + "\n * ".join(matches))
+        print("")
+    else:
+        print("Package `{}` not found".format(package))
+        print("Try `pipwin refresh`")
+
+
 def main():
     """
     Command line entry point
     """
 
     parser = argparse.ArgumentParser(
-        description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke"
-    )
+        description="pipwin installs compiled python binaries on windows "
+                    "provided by Christoph Gohlke")
     parser.add_argument("command",
                         choices=["install",
                                  "uninstall",
@@ -22,50 +46,39 @@ def main():
                                  "list",
                                  "refresh"],
                         help="the action to perform")
-    parser.add_argument("package",
-                        nargs="?",
-                        help="the package name")
+    parser.add_argument("package", nargs="?", help="the package name")
+    parser.add_argument("-f", "--file", nargs="?",
+                        help="file with list of package names")
 
     args = parser.parse_args()
 
-    # Checking if not on Windows
+    # Exit if not on Windows
     if platform.system() != "Windows":
         print("C'mon ! It's pip'win' ! Install it on a Windows machine.")
         sys.exit(0)
 
-    # Setup cache and handle refresh
+    # Handle refresh
     if args.command == "refresh":
         pipwin.refresh()
         sys.exit(0)
-    else:
-        cache = pipwin.PipwinCache()
+
+    cache = pipwin.PipwinCache()
 
     # Handle list
     if args.command == "list":
         cache.print_list()
         sys.exit(0)
-    elif not args.package:
-        print("Provide a package name")
-        sys.exit(0)
 
-    # Search for package in cache
-    exact_match, matches = cache.search(args.package)
-    if exact_match:
-        print("Package found in cache")
-    else:
-        if len(matches) > 0:
-            print("Did you mean any of these ?\n")
-            print(" * " + "\n * ".join(matches))
-            print("")
-        else:
-            print("Package not found")
-            print("Try `pipwin refresh`")
-        sys.exit(0)
-
-    # Handle install/uninstall
-    if args.command == "install":
-        cache.install(args.package)
-    elif args.command == "uninstall":
-        cache.uninstall(args.package)
-    elif args.command == "download":
-        cache.download(args.package)
+    for package in _package_names(args):
+        exact_match, matches = cache.search(package)
+        if not exact_match:
+            _print_unresolved_match_msg(package, matches)
+            sys.exit(0)
+        print("Package `{}` found in cache".format(package))
+        # Handle install/uninstall/download
+        if args.command == "install":
+            cache.install(package)
+        elif args.command == "uninstall":
+            cache.uninstall(package)
+        elif args.command == "download":
+            cache.download(package)
