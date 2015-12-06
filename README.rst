@@ -50,6 +50,12 @@ Details
 
 - Install packages : ``pipwin install <package>``
 
+- Download only (to ~/pipwin) : ``pipwin download <package>``
+
+- Install from pipwin requirements file : ``pipwin install -file requirements.txt``
+
+- Download only from pipwin requirements file : ``pipwin download -file requirements.txt``
+
 - Uninstall packages (Can directly use **pip** for this) : ``pipwin uninstall <package>``
 
 **Free software: BSD license**

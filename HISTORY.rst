@@ -3,6 +3,11 @@
 History
 -------
 
+0.2.5 (2015-12-06)
+--------------------
+* Add download only option
+* Install packages from requirements file
+
 0.2.4 (2015-11-20)
 --------------------
 * Switch to robobrowser for downloading main page (fixes 404)
