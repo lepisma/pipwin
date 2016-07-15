@@ -2,6 +2,9 @@
 pipwin
 ===============================
 
+[*UNMAINTAINED*]
+^^^^^^^^^^^^^^
+
 **There is an issue with wheel urls. Download wheels directly from the website http://www.lfd.uci.edu/~gohlke/pythonlibs/ till the issue is resolved. Also PRs are accepted.**
 
 
