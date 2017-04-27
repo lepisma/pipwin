@@ -16,7 +16,8 @@ requirements = [
     "requests",
     "robobrowser",
     "pyprind",
-    "six"
+    "six",
+    "js2py",
 ]
 
 setup(
