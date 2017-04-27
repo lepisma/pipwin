@@ -44,7 +44,7 @@ def parse_url(ml, mi):
     function dl1(ml,mi){
         var ot="";
         for(var j=0;j<mi.length;j++)
-            ot+=String.fromCharCode(ml[mi.charCodeAt(j)-48]);
+            ot+=String.fromCharCode(ml[mi.charCodeAt(j)-47]);
         location.href=ot;
     }
     function dl(ml,mi){
@@ -62,7 +62,7 @@ def parse_url(ml, mi):
 
     route = ""
     for character in mi:
-        route += chr(ml[ord(character) - 48])
+        route += chr(ml[ord(character) - 47])
 
     return MAIN_URL + route
 
