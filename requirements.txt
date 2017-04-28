@@ -4,3 +4,4 @@ robobrowser
 requests
 pyprind
 six
+js2py
