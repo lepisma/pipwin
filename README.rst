@@ -6,7 +6,11 @@ pipwin
 .. image:: https://img.shields.io/pypi/v/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: Latest Version
-    
+
+.. image:: https://img.shields.io/appveyor/ci/lepisma/pipwin.svg?style=flat-square
+    :target: https://ci.appveyor.com/project/lepisma/pipwin
+    :alt: Build
+
 .. image:: https://img.shields.io/pypi/dm/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: Downloads
