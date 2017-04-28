@@ -2,11 +2,6 @@
 pipwin
 ===============================
 
-[*UNMAINTAINED*]
-^^^^^^^^^^^^^^
-
-**There is an issue with wheel urls. Download wheels directly from the website http://www.lfd.uci.edu/~gohlke/pythonlibs/ till the issue is resolved. Also PRs are accepted.**
-
 
 .. image:: https://img.shields.io/pypi/v/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
