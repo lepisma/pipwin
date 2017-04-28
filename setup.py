@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
-
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -18,11 +16,12 @@ requirements = [
     "pyprind",
     "six",
     "js2py",
+    "packaging",
 ]
 
 setup(
     name="pipwin",
-    version="0.2.5",
+    version="0.3",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme,
     author="lepisma",
@@ -40,10 +39,8 @@ setup(
         "console_scripts": ["pipwin=pipwin.command:main"],
     },
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Environment :: Console",
+        "Development Status :: 3 - Alpha", "Environment :: Console",
         "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3"
-    ]
-)
+    ])

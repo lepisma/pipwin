@@ -4,6 +4,7 @@ import argparse
 import sys
 import platform
 from . import pipwin
+from packaging.requirements import Requirement
 
 
 def _package_names(args):
@@ -11,12 +12,12 @@ def _package_names(args):
         with open(args.file, 'r') as fid:
             for package in fid.readlines():
                 if package and not package.startswith('#'):
-                    yield package.strip()
+                    yield Requirement(package.strip())
     elif not args.package:
         print("Provide a package name")
         sys.exit(0)
     else:
-        yield args.package
+        yield Requirement(args.package)
     return
 
 
@@ -26,9 +27,8 @@ def _print_unresolved_match_msg(package, matches):
         print(" * " + "\n * ".join(matches))
         print("")
     else:
-        print("Package `{}` not found".format(package))
+        print("Package `{}` not found".format(package.name))
         print("Try `pipwin refresh`")
-
 
 def main():
     """
@@ -47,8 +47,7 @@ def main():
                                  "refresh"],
                         help="the action to perform")
     parser.add_argument("package", nargs="?", help="the package name")
-    parser.add_argument("-f", "--file", nargs="?",
-                        help="file with list of package names")
+    parser.add_argument("-r", "--file", nargs="?", help="file with list of package names")
 
     args = parser.parse_args()
 
