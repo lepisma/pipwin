@@ -12,6 +12,7 @@ from sys import version_info
 from itertools import product
 import pyprind
 import six
+import js2py
 
 # Python 2.X 3.X input
 try:
@@ -34,39 +35,6 @@ HEADER = {
     "Referer": "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 }
 
-
-def parse_url(ml, mi):
-    """
-    Parse url from ml and mi component of the link.
-    This works according to the js functions on the website.
-    The functions are reproduced here:
-
-    function dl1(ml,mi){
-        var ot="";
-        for(var j=0;j<mi.length;j++)
-            ot+=String.fromCharCode(ml[mi.charCodeAt(j)-47]);
-        location.href=ot;
-    }
-    function dl(ml,mi){
-        mi=mi.replace('&lt;','<');
-        mi=mi.replace('&gt;','>');
-        mi=mi.replace('&amp;','&');
-        setTimeout(function(){dl1(ml,mi)},1500);
-    }
-    """
-
-    # Reform >, < and &
-    mi = mi.replace("&lt;", "<")
-    mi = mi.replace("&gt;", ">")
-    mi = mi.replace("&amp;", "&")
-
-    route = ""
-    for character in mi:
-        route += chr(ml[ord(character) - 47])
-
-    return MAIN_URL + route
-
-
 def build_cache():
     """
     Get current data from the website http://www.lfd.uci.edu/~gohlke/pythonlibs/
@@ -80,14 +48,26 @@ def build_cache():
 
     soup = RoboBrowser()
     soup.open(MAIN_URL)
+
+    # We mock out a little javascript environment within which to run Gohlke's obfuscation code
+    context = js2py.EvalJs()
+    context.execute("""
+    top = {location: {href: ''}};
+    location = {href: ''};
+    function setTimeout(f, t) {
+        f();
+    };
+    """)
+
+    # We grab Gohlke's code and evaluate it within py2js
+    context.execute(soup.find("script").text)
+
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
-            jsfun = link.get("onclick").split("\"")
-            mlstr = jsfun[0].split("(")[1].strip()[1:-2]
-            ml = list(map(int, mlstr.split(",")))
-            mi = jsfun[1]
-            url = parse_url(ml, mi)
+            # Evaluate the obfuscation javascript, store the result (squirreled away within location.href) into url
+            context.execute(link.get("onclick").split("javascript:")[-1])
+            url = MAIN_URL + context.location.href
 
             # Details = [package, version, pyversion, --, arch]
             details = url.split("/")[-1].split("-")
