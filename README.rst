@@ -42,6 +42,8 @@ QuickStart
 
    >> pipwin install opencv-python
 
+   >> pipwin install numpy>=1.11
+
 
 Details
 ^^^^^^^
@@ -55,12 +57,13 @@ Details
 - Search packages : ``pipwin search <partial_name/name>``
 
 - Install packages : ``pipwin install <package>``
+  Also works version specifiers, e.g. ``pipwin install <package>==<version>`` or ``pipwin install <package><=<version>``
 
 - Download only (to ~/pipwin) : ``pipwin download <package>``
 
-- Install from pipwin requirements file : ``pipwin install -file requirements.txt``
+- Install from pipwin requirements file : ``pipwin install -r requirements.txt``
 
-- Download only from pipwin requirements file : ``pipwin download -file requirements.txt``
+- Download only from pipwin requirements file : ``pipwin download -r requirements.txt``
 
 - Uninstall packages (Can directly use **pip** for this) : ``pipwin uninstall <package>``
 

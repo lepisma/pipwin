@@ -3,7 +3,6 @@
 import pip
 import requests
 from robobrowser import RoboBrowser
-from bs4 import BeautifulSoup
 from os.path import expanduser, join, isfile, exists
 import os
 import json
@@ -152,7 +151,6 @@ class PipwinCache(object):
         self.cache_file = join(home_dir, ".pipwin")
 
         if isfile(self.cache_file) and not refresh:
-            print(self.cache_file)
             with open(self.cache_file) as fp:
                 cache_dump = fp.read()
             self.data = json.loads(cache_dump)
@@ -182,7 +180,7 @@ class PipwinCache(object):
             print(package)
         print("")
 
-    def search(self, package):
+    def search(self, requirement):
         """
         Search for a package
 
@@ -194,39 +192,18 @@ class PipwinCache(object):
             List of matches. Is a string if exact_match is True.
         """
 
-        exact_match = package in self.sys_data.keys()
+        if requirement.name in self.sys_data.keys():
+            return [True, requirement.name]
 
-        if exact_match:
-            return [exact_match, package]
+        # find all packages that contain our search term within them
+        found = [pack for pack in self.sys_data.keys() if requirement.name in pack]
+        return [False, found]
 
-        found = []
-        for pack in self.sys_data.keys():
-            if package in pack:
-                # Partial string search
-                found.append(pack)
-
-        return [exact_match, found]
-
-    def _get_url(self, package):
-        url = None
-        if len(self.sys_data[package]) == 1:
-            url = six.next(six.itervalues(self.sys_data[package]))
-        else:
-            print("Choose version to download.\n")
-            ver_keys = list(self.sys_data[package].keys())
-            for index, version in enumerate(ver_keys):
-                print("[" + str(index) + "] : " + str(version))
-
-            while True:
-                try:
-                    selected_id = int(input("\nType version id shown in box : "))
-                    url = self.sys_data[package][ver_keys[selected_id]]
-                    break
-                except ValueError:
-                    print("Id should be a valid integer")
-                except IndexError:
-                    print("Id should be in the available range")
-        return url
+    def _get_url(self, requirement):
+        versions = list(requirement.specifier.filter(self.sys_data[requirement.name].keys()))
+        if not versions:
+            raise ValueError("Could not satisfy requirement %s"%(str(requirement)))
+        return self.sys_data[requirement.name][max(versions)]
 
     def _get_pipwin_dir(self):
         home_dir = expanduser("~")
@@ -241,8 +218,8 @@ class PipwinCache(object):
             return None
         return bar
 
-    def _download(self, package):
-        url = self._get_url(package)
+    def _download(self, requirement):
+        url = self._get_url(requirement)
         wheel_name = url.split("/")[-1]
         print("Downloading package . . .")
         print(url)
@@ -264,24 +241,24 @@ class PipwinCache(object):
                     bar.update()
         return wheel_file
 
-    def download(self, package):
-        self._download(package)
+    def download(self, requirement):
+        return self._download(requirement)
 
-    def install(self, package):
+    def install(self, requirement):
         """
         Install a package
         """
-        wheel_file = self._download(package)
+        wheel_file = self.download(requirement)
         pip.main(["install", wheel_file])
 
         os.remove(wheel_file)
 
-    def uninstall(self, package):
+    def uninstall(self, requirement):
         """
         Uninstall a package
         """
 
-        pip.main(["uninstall", self.sys_data[package]])
+        pip.main(["uninstall", self.sys_data[requirement.name]])
 
 
 def refresh():
