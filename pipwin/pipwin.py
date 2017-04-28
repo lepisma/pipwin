@@ -258,7 +258,7 @@ class PipwinCache(object):
         Uninstall a package
         """
 
-        pip.main(["uninstall", self.sys_data[requirement.name]])
+        pip.main(["uninstall", requirement.name])
 
 
 def refresh():

@@ -1,0 +1,28 @@
+environment:
+  matrix:
+    # Python 2.7
+    - PYTHON: "C:\\Python27"
+    - PYTHON: "C:\\Python27-x64"
+
+    # Python 3.4
+    - PYTHON: "C:\\Python34"
+    - PYTHON: "C:\\Python34-x64"
+
+    # Python 3.5
+    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python35-x64"
+
+    # Python 3.6
+    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python36-x64"
+
+install:
+  - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+
+build: off
+
+test_script:
+  - "%PYTHON%\\python.exe setup.py install"
+  - "%PYTHON%\\Scripts\\pipwin.exe search babel"
+  - "%PYTHON%\\Scripts\\pipwin.exe install babel>=2.0"
+  - "echo y | %PYTHON%\\Scripts\\pipwin.exe uninstall babel"
