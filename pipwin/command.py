@@ -36,6 +36,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
+        prog="pipwin",
         description="pipwin installs compiled python binaries on windows "
                     "provided by Christoph Gohlke")
     parser.add_argument("command",
