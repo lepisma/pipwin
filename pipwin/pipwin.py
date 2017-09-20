@@ -12,6 +12,7 @@ from itertools import product
 import pyprind
 import six
 import js2py
+import re
 
 # Python 2.X 3.X input
 try:
@@ -65,7 +66,9 @@ def build_cache():
     for link in links:
         if link.get("onclick") is not None:
             # Evaluate the obfuscation javascript, store the result (squirreled away within location.href) into url
-            context.execute(link.get("onclick").split("javascript:")[-1])
+            regex_result = re.search('dl\(.*\);', link.get("onclick"))
+            if regex_result is not None:
+                context.execute(regex_result.group(0))
             url = MAIN_URL + context.location.href
 
             # Details = [package, version, pyversion, --, arch]
