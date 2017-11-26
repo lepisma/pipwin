@@ -13,6 +13,10 @@ import pyprind
 import six
 import js2py
 import re
+import ssl
+from requests.adapters import HTTPAdapter
+from urllib3.poolmanager import PoolManager
+from urllib3.util.ssl_ import create_urllib3_context
 
 # Python 2.X 3.X input
 try:
@@ -35,6 +39,29 @@ HEADER = {
     "Referer": "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 }
 
+class DESAdapter(HTTPAdapter):
+    """
+    Workaround to prevent https errors with newer versions of the requests package.
+
+    Forces all HTTPS connections to be negotiated using a limited set of legacy
+    TLS ciphers which are supported by the UCI LFD server. A short list of ciphers is
+    used so that the handshake message does not exceed 255 bytes - see
+    https://github.com/ssllabs/research/wiki/Long-Handshake-Intolerance
+
+    If the UCI LFD server is ever upgraded, this code should be removed as the resulting
+    connection is potentially vulnerable to attack!
+    """
+
+    CIPHERS = 'RSA+3DES:ECDH+3DES:DH+3DES'
+
+    def init_poolmanager(self, connections, maxsize, block=False, *args, **kwargs):
+        context = create_urllib3_context(ciphers=DESAdapter.CIPHERS)
+        kwargs['ssl_context'] = context
+        self.poolmanager = PoolManager(
+            num_pools=connections, maxsize=maxsize,
+            block=block, ssl_version=ssl.PROTOCOL_TLS, *args, **kwargs)
+
+
 def build_cache():
     """
     Get current data from the website http://www.lfd.uci.edu/~gohlke/pythonlibs/
@@ -46,7 +73,10 @@ def build_cache():
 
     data = {}
 
-    soup = RoboBrowser()
+    sess = requests.Session()
+    sess.mount('https://', DESAdapter())
+
+    soup = RoboBrowser(session=sess)
     soup.open(MAIN_URL)
 
     # We mock out a little javascript environment within which to run Gohlke's obfuscation code
@@ -69,7 +99,7 @@ def build_cache():
             regex_result = re.search('dl\(.*\);', link.get("onclick"))
             if regex_result is not None:
                 context.execute(regex_result.group(0))
-            url = MAIN_URL + context.location.href
+            url = context.location.href
 
             # Details = [package, version, pyversion, --, arch]
             details = url.split("/")[-1].split("-")
@@ -230,7 +260,10 @@ class PipwinCache(object):
 
         wheel_file = join(self._get_pipwin_dir(), wheel_name)
 
-        res = requests.get(url, headers=HEADER, stream=True)
+        sess = requests.Session()
+        sess.mount('https://', DESAdapter())
+        res = sess.get(url, headers=HEADER, stream=True)
+
         length = res.headers.get("content-length")
         chunk = 1024
 
