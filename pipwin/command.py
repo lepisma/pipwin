@@ -3,6 +3,7 @@
 import argparse
 import sys
 import platform
+from warnings import warn
 from . import pipwin
 from packaging.requirements import Requirement
 
@@ -52,10 +53,9 @@ def main():
 
     args = parser.parse_args()
 
-    # Exit if not on Windows
+    # Warn if not on windows
     if platform.system() != "Windows":
-        print("C'mon ! It's pip'win' ! Install it on a Windows machine.")
-        sys.exit(0)
+        warn("Found a non Windows system. Package installation will not work.")
 
     # Handle refresh
     if args.command == "refresh":
