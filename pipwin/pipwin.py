@@ -76,7 +76,7 @@ def build_cache():
     sess = requests.Session()
     sess.mount('https://', DESAdapter())
 
-    soup = RoboBrowser(session=sess)
+    soup = RoboBrowser(session=sess, parser="html.parser")
     soup.open(MAIN_URL)
 
     # We mock out a little javascript environment within which to run Gohlke's obfuscation code
