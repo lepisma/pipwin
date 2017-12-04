@@ -21,6 +21,8 @@ install:
 
 build: off
 
+max_jobs: 1
+
 test_script:
   - "%PYTHON%\\python.exe setup.py install"
   - "%PYTHON%\\Scripts\\pipwin.exe search babel"
