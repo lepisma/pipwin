@@ -27,7 +27,7 @@ except NameError:
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 
 HEADER = {
-    "Host": "www.lfd.uci.edu",
+    "Host" : "download.lfd.uci.edu",
     "Connection": "keep-alive",
     "Cache-Control": "max-age=0",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -36,7 +36,6 @@ HEADER = {
     "DNT": "1",
     "Accept-Encoding": "gzip, deflate, sdch",
     "Accept-Language": "en-US,en;q=0.8",
-    "Referer": "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 }
 
 class DESAdapter(HTTPAdapter):
@@ -59,7 +58,7 @@ class DESAdapter(HTTPAdapter):
         kwargs['ssl_context'] = context
         self.poolmanager = PoolManager(
             num_pools=connections, maxsize=maxsize,
-            block=block, ssl_version=ssl.PROTOCOL_TLS, *args, **kwargs)
+            block=block, ssl_version=ssl.PROTOCOL_SSLv23, *args, **kwargs)
 
 
 def build_cache():
@@ -260,9 +259,7 @@ class PipwinCache(object):
 
         wheel_file = join(self._get_pipwin_dir(), wheel_name)
 
-        sess = requests.Session()
-        sess.mount('https://', DESAdapter())
-        res = sess.get(url, headers=HEADER, stream=True)
+        res = requests.get(url, headers=HEADER, stream=True)
 
         length = res.headers.get("content-length")
         chunk = 1024
