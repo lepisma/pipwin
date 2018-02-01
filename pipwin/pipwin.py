@@ -250,14 +250,21 @@ class PipwinCache(object):
             return None
         return bar
 
-    def _download(self, requirement):
+    def _download(self, requirement, dest):
         url = self._get_url(requirement)
         wheel_name = url.split("/")[-1]
         print("Downloading package . . .")
         print(url)
         print(wheel_name)
 
-        wheel_file = join(self._get_pipwin_dir(), wheel_name)
+        if dest is not None:
+            # Ensure the download directory
+            if not exists(dest):
+                os.makedirs(dest)
+        else:
+            dest = self._get_pipwin_dir()
+
+        wheel_file = join(dest, wheel_name)
 
         res = requests.get(url, headers=HEADER, stream=True)
 
@@ -274,8 +281,8 @@ class PipwinCache(object):
                     bar.update()
         return wheel_file
 
-    def download(self, requirement):
-        return self._download(requirement)
+    def download(self, requirement, dest=None):
+        return self._download(requirement, dest)
 
     def install(self, requirement):
         """

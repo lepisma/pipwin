@@ -50,6 +50,7 @@ def main():
                         help="the action to perform")
     parser.add_argument("package", nargs="?", help="the package name")
     parser.add_argument("-r", "--file", nargs="?", help="file with list of package names")
+    parser.add_argument("-d", "--dest", nargs="?", help="Download packages into [DEST]")
 
     args = parser.parse_args()
 
@@ -81,4 +82,4 @@ def main():
         elif args.command == "uninstall":
             cache.uninstall(package)
         elif args.command == "download":
-            cache.download(package)
+            cache.download(package, dest=args.dest)
