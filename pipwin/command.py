@@ -55,7 +55,7 @@ def main():
     Command line entry point
     """
 
-    args = docopt(__doc__, version="pipwin v0.3.5")
+    args = docopt(__doc__, version="pipwin v0.4.0")
 
     # Warn if not on windows
     if platform.system() != "Windows":
