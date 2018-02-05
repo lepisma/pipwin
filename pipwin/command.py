@@ -1,6 +1,25 @@
 # -*- coding: utf-8 -*-
+"""pipwin installs compiled python binaries on windows provided by Christoph
+Gohlke
 
-import argparse
+Usage:
+  pipwin install <package> [-r=<file> | --file=<file>]
+  pipwin uninstall <package>
+  pipwin download <package> [-d=<dest> | --dest=<dest>]
+  pipwin search <package>
+  pipwin list
+  pipwin refresh
+  pipwin (-h | --help)
+  pipwin (-v | --version)
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  -r=<file> --file=<file>  File with list of package names.
+  -d=<dest> --dest=<dest>  Download packages into <dest>.
+"""
+
+from docopt import docopt
 import sys
 import platform
 from warnings import warn
@@ -9,16 +28,16 @@ from packaging.requirements import Requirement
 
 
 def _package_names(args):
-    if args.file:
-        with open(args.file, 'r') as fid:
+    if args["--file"]:
+        with open(args["--file"], 'r') as fid:
             for package in fid.readlines():
                 if package and not package.startswith('#'):
                     yield Requirement(package.strip())
-    elif not args.package:
+    elif not args["<package>"]:
         print("Provide a package name")
         sys.exit(0)
     else:
-        yield Requirement(args.package)
+        yield Requirement(args["<package>"])
     return
 
 
@@ -36,37 +55,21 @@ def main():
     Command line entry point
     """
 
-    parser = argparse.ArgumentParser(
-        prog="pipwin",
-        description="pipwin installs compiled python binaries on windows "
-                    "provided by Christoph Gohlke")
-    parser.add_argument("command",
-                        choices=["install",
-                                 "uninstall",
-                                 "download",
-                                 "search",
-                                 "list",
-                                 "refresh"],
-                        help="the action to perform")
-    parser.add_argument("package", nargs="?", help="the package name")
-    parser.add_argument("-r", "--file", nargs="?", help="file with list of package names")
-    parser.add_argument("-d", "--dest", nargs="?", help="Download packages into [DEST]")
-
-    args = parser.parse_args()
+    args = docopt(__doc__, version="pipwin v0.3.5")
 
     # Warn if not on windows
     if platform.system() != "Windows":
-        warn("Found a non Windows system. Package installation will not work.")
+        warn("Found a non Windows system. Package installation might not work.")
 
     # Handle refresh
-    if args.command == "refresh":
+    if args["refresh"]:
         pipwin.refresh()
         sys.exit(0)
 
     cache = pipwin.PipwinCache()
 
     # Handle list
-    if args.command == "list":
+    if args["list"]:
         cache.print_list()
         sys.exit(0)
 
@@ -77,9 +80,9 @@ def main():
             sys.exit(0)
         print("Package `{}` found in cache".format(package))
         # Handle install/uninstall/download
-        if args.command == "install":
+        if args["install"]:
             cache.install(package)
-        elif args.command == "uninstall":
+        elif args["uninstall"]:
             cache.uninstall(package)
-        elif args.command == "download":
-            cache.download(package, dest=args.dest)
+        elif args["download"]:
+            cache.download(package, dest=args["--dest"])
