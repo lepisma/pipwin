@@ -266,6 +266,10 @@ class PipwinCache(object):
 
         wheel_file = join(dest, wheel_name)
 
+        if exists(wheel_file):
+            print("File " + wheel_file + " already exists")
+            return wheel_file
+
         res = requests.get(url, headers=HEADER, stream=True)
 
         length = res.headers.get("content-length")
