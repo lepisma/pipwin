@@ -5,7 +5,7 @@ Gohlke
 Usage:
   pipwin install <package> [-r=<file> | --file=<file>]
   pipwin uninstall <package>
-  pipwin download <package> [-d=<dest> | --dest=<dest>]
+  pipwin download <package> [-d=<dest> | --dest=<dest>] [-r=<file> | --file=<file>]
   pipwin search <package>
   pipwin list
   pipwin refresh
@@ -55,7 +55,7 @@ def main():
     Command line entry point
     """
 
-    args = docopt(__doc__, version="pipwin v0.4.0")
+    args = docopt(__doc__, version="pipwin v0.4.1")
 
     # Warn if not on windows
     if platform.system() != "Windows":
