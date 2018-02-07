@@ -13,8 +13,8 @@ Usage:
   pipwin (-v | --version)
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help                Show this screen.
+  -v --version             Show version.
   -r=<file> --file=<file>  File with list of package names.
   -d=<dest> --dest=<dest>  Download packages into <dest>.
 """
@@ -23,7 +23,7 @@ from docopt import docopt
 import sys
 import platform
 from warnings import warn
-from . import pipwin
+from . import pipwin, __version__
 from packaging.requirements import Requirement
 
 
@@ -55,7 +55,7 @@ def main():
     Command line entry point
     """
 
-    args = docopt(__doc__, version="pipwin v0.4.2")
+    args = docopt(__doc__, version="pipwin v{}".format(__version__))
 
     # Warn if not on windows
     if platform.system() != "Windows":
@@ -77,7 +77,11 @@ def main():
         exact_match, matches = cache.search(package)
         if not exact_match:
             _print_unresolved_match_msg(package, matches)
-            sys.exit(0)
+            if args["--file"]:
+                # We just skip this specific package and work on the others
+                continue
+            else:
+                sys.exit(1)
         print("Package `{}` found in cache".format(package))
         # Handle install/uninstall/download
         if args["install"]:
