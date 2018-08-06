@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pip
+import pip._internal
 import requests
 from robobrowser import RoboBrowser
 from os.path import expanduser, join, isfile, exists
@@ -293,7 +294,7 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        pip.main(["install", wheel_file])
+        pip._internal.main(["install", wheel_file])
 
         os.remove(wheel_file)
 
@@ -302,7 +303,7 @@ class PipwinCache(object):
         Uninstall a package
         """
 
-        pip.main(["uninstall", requirement.name])
+        pip._internal.main(["uninstall", requirement.name])
 
 
 def refresh():
