@@ -74,7 +74,7 @@ def build_cache():
     data = {}
 
     sess = requests.Session()
-    sess.mount('https://', DESAdapter())
+    #sess.mount('https://', DESAdapter())
 
     soup = RoboBrowser(session=sess, parser="html.parser")
     soup.open(MAIN_URL)
@@ -90,7 +90,8 @@ def build_cache():
     """)
 
     # We grab Gohlke's code and evaluate it within py2js
-    context.execute(soup.find("script").text)
+    dl_function = re.search('function dl.*\}', soup.find("script").text).group(0)
+    context.execute(dl_function)
 
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
@@ -124,7 +125,6 @@ def build_cache():
                     data[pkg][py_ver_key] = {pkg_ver: url}
             else:
                 data[pkg] = {py_ver_key: {pkg_ver: url}}
-
     return data
 
 
@@ -312,3 +312,6 @@ def refresh():
     """
 
     PipwinCache(refresh=True)
+    
+if __name__ == "__main__":
+    refresh()
