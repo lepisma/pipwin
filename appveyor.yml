@@ -4,15 +4,15 @@ environment:
     - PYTHON: "C:\\Python27"
     - PYTHON: "C:\\Python27-x64"
 
-    # Python 3.4
+    # Python 3.5
     - PYTHON: "C:\\Python34"
     - PYTHON: "C:\\Python34-x64"
 
-    # Python 3.5
+    # Python 3.6
     - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python35-x64"
 
-    # Python 3.6
+    # Python 3.7
     - PYTHON: "C:\\Python36"
     - PYTHON: "C:\\Python36-x64"
 
@@ -25,6 +25,15 @@ max_jobs: 1
 
 test_script:
   - "%PYTHON%\\python.exe setup.py install"
-  - "%PYTHON%\\Scripts\\pipwin.exe search babel"
-  - "%PYTHON%\\Scripts\\pipwin.exe install babel>=2.0"
-  - "echo y | %PYTHON%\\Scripts\\pipwin.exe uninstall babel"
+  # First package:
+  - "%PYTHON%\\Scripts\\pipwin.exe search ad3"
+  - "%PYTHON%\\Scripts\\pipwin.exe install ad3"
+  - "echo y | %PYTHON%\\Scripts\\pipwin.exe uninstall ad3"
+  # Last package:
+  - "%PYTHON%\\Scripts\\pipwin.exe search zstd"
+  - "%PYTHON%\\Scripts\\pipwin.exe install zstd"
+  - "echo y | %PYTHON%\\Scripts\\pipwin.exe uninstall zstd"
+  # Last Misc package:
+  - "%PYTHON%\\Scripts\\pipwin.exe search zope.testing"
+  - "%PYTHON%\\Scripts\\pipwin.exe install zope.testing"
+  - "echo y | %PYTHON%\\Scripts\\pipwin.exe uninstall zope.testing"
