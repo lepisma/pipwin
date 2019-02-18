@@ -8,7 +8,7 @@ Usage:
   pipwin download (<package> | [-r=<file> | --file=<file>]) [-d=<dest> | --dest=<dest>]
   pipwin search <package>
   pipwin list
-  pipwin refresh
+  pipwin refresh [--log=<log>]
   pipwin (-h | --help)
   pipwin (-v | --version)
 
@@ -22,6 +22,7 @@ Options:
 from docopt import docopt
 import sys
 import platform
+import logging
 from warnings import warn
 from . import pipwin, __version__
 from packaging.requirements import Requirement
@@ -50,6 +51,7 @@ def _print_unresolved_match_msg(package, matches):
         print("Package `{}` not found".format(package.name))
         print("Try `pipwin refresh`")
 
+
 def main():
     """
     Command line entry point
@@ -63,6 +65,13 @@ def main():
 
     # Handle refresh
     if args["refresh"]:
+        log_level = args.get("--log", None)
+        if log_level:
+            log_level = log_level.upper()
+        try:
+            logging.basicConfig(level=log_level)
+        except ValueError:
+            print("Log level should be DEBUG, INFO, WARNING or ERROR")
         pipwin.refresh()
         sys.exit(0)
 
