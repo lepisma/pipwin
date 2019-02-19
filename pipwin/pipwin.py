@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pip
 import pip._internal
 import requests
@@ -11,13 +10,19 @@ import struct
 from sys import version_info
 from itertools import product
 import pyprind
-import six
 import js2py
 import re
 import ssl
 from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 from urllib3.util.ssl_ import create_urllib3_context
+import logging
+try:
+    unicode
+except NameError:
+    unicode = str
+
+logger = logging.getLogger(__name__)
 
 # Python 2.X 3.X input
 try:
@@ -28,7 +33,7 @@ except NameError:
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 
 HEADER = {
-    "Host" : "download.lfd.uci.edu",
+    "Host": "download.lfd.uci.edu",
     "Connection": "keep-alive",
     "Cache-Control": "max-age=0",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -38,6 +43,7 @@ HEADER = {
     "Accept-Encoding": "gzip, deflate, sdch",
     "Accept-Language": "en-US,en;q=0.8",
 }
+
 
 class DESAdapter(HTTPAdapter):
     """
@@ -90,16 +96,19 @@ def build_cache():
     """)
 
     # We grab Gohlke's code and evaluate it within py2js
-    dl_function = re.search('function dl.*\}', soup.find("script").text).group(0)
+    dl_function = re.search(r'function dl.*\}', soup.find("script").text).group(0)
     context.execute(dl_function)
 
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
             # Evaluate the obfuscation javascript, store the result (squirreled away within location.href) into url
-            regex_result = re.search('dl\(.*\);', link.get("onclick"))
-            if regex_result is not None:
-                context.execute(regex_result.group(0))
+            regex_result = re.search(r'dl\(.*\)', link.get("onclick"))
+            if regex_result is None:
+                logger.info(u'Skip %s (wrong link format)' %
+                            unicode(link.string))
+                continue
+            context.execute(regex_result.group(0))
             url = context.location.href
 
             # Details = [package, version, pyversion, --, arch]
@@ -108,7 +117,11 @@ def build_cache():
 
             # Not using EXEs and ZIPs
             if len(details) != 5:
+                logger.info(u'Skip %s (wrong name format)' %
+                            unicode(link.string))
                 continue
+            else:
+                logger.debug(u'Add %s' % unicode(link.string))
             # arch = win32 / win_amd64 / any
             arch = details[4]
             arch = arch.split(".")[0]
@@ -125,6 +138,10 @@ def build_cache():
                     data[pkg][py_ver_key] = {pkg_ver: url}
             else:
                 data[pkg] = {py_ver_key: {pkg_ver: url}}
+        else:
+            if link.string:
+                logger.debug(u'Skip %s (missing link)' %
+                             unicode(link.string))
     return data
 
 
@@ -235,7 +252,7 @@ class PipwinCache(object):
     def _get_url(self, requirement):
         versions = list(requirement.specifier.filter(self.sys_data[requirement.name].keys()))
         if not versions:
-            raise ValueError("Could not satisfy requirement %s"%(str(requirement)))
+            raise ValueError("Could not satisfy requirement %s" % (str(requirement)))
         return self.sys_data[requirement.name][max(versions)]
 
     def _get_pipwin_dir(self):
@@ -312,6 +329,7 @@ def refresh():
     """
 
     PipwinCache(refresh=True)
-    
+
+
 if __name__ == "__main__":
     refresh()
