@@ -5,6 +5,7 @@ import requests
 from robobrowser import RoboBrowser
 from os.path import expanduser, join, isfile, exists
 import os
+import subprocess
 import json
 import struct
 from sys import version_info
@@ -311,8 +312,7 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        pip._internal.main(["install", wheel_file])
-
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'my_package'])
         os.remove(wheel_file)
 
     def uninstall(self, requirement):
