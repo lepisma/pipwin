@@ -8,7 +8,7 @@ import os
 import subprocess
 import json
 import struct
-from sys import version_info
+from sys import version_info, executable
 from itertools import product
 import pyprind
 import js2py
@@ -312,15 +312,15 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install',  wheel_file])
+        subprocess.check_call([executable, '-m', 'pip', 'install',  wheel_file])
         os.remove(wheel_file)
 
     def uninstall(self, requirement):
         """
         Uninstall a package
         """
-
-        pip._internal.main(["uninstall", requirement.name])
+        subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement])
+        
 
 
 def refresh():
