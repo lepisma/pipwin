@@ -312,7 +312,7 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'my_package'])
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install',  wheel_file])
         os.remove(wheel_file)
 
     def uninstall(self, requirement):
