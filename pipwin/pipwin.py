@@ -319,7 +319,7 @@ class PipwinCache(object):
         """
         Uninstall a package
         """
-        subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement])
+        subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement.name])
         
 
 
