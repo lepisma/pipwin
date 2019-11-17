@@ -38,7 +38,7 @@ def _package_names(args):
         print("Provide a package name")
         sys.exit(0)
     else:
-        yield Requirement(args["<package>"])
+        yield Requirement(args["<package>"].lower())
     return
 
 
