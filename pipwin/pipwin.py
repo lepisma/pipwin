@@ -5,9 +5,10 @@ import requests
 from robobrowser import RoboBrowser
 from os.path import expanduser, join, isfile, exists
 import os
+import subprocess
 import json
 import struct
-from sys import version_info
+from sys import version_info, executable
 from itertools import product
 import pyprind
 import js2py
@@ -311,16 +312,15 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        pip._internal.main(["install", wheel_file])
-
+        subprocess.check_call([executable, '-m', 'pip', 'install',  wheel_file])
         os.remove(wheel_file)
 
     def uninstall(self, requirement):
         """
         Uninstall a package
         """
-
-        pip._internal.main(["uninstall", requirement.name])
+        subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement.name])
+        
 
 
 def refresh():

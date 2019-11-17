@@ -17,6 +17,10 @@ environment:
     # Python 3.7
     - PYTHON: "C:\\Python37"
     - PYTHON: "C:\\Python37-x64"
+    
+    # Python 3.8
+    - PYTHON: "C:\\Python38"
+    - PYTHON: "C:\\Python38-x64"
 
 install:
   - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
@@ -36,4 +40,4 @@ test_script:
   # Last package:
   - "%PYTHON%\\Scripts\\pipwin.exe search zstd"
   # Last Misc package:
-  - "%PYTHON%\\Scripts\\pipwin.exe search zope.testing"
+  - "%PYTHON%\\Scripts\\pipwin.exe search zope.exceptions"
