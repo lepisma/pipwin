@@ -6,18 +6,6 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHONIOENCODING: "UTF-8"
 
-    # Python 3.5
-    - PYTHON: "C:\\Python35"
-    - PYTHON: "C:\\Python35-x64"
-
-    # Python 3.6
-    - PYTHON: "C:\\Python36"
-    - PYTHON: "C:\\Python36-x64"
-
-    # Python 3.7
-    - PYTHON: "C:\\Python37"
-    - PYTHON: "C:\\Python37-x64"
-    
     # Python 3.8
     - PYTHON: "C:\\Python38"
     - PYTHON: "C:\\Python38-x64"
