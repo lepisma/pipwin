@@ -17,6 +17,7 @@ requirements = [
     "pyprind",
     "six",
     "js2py",
+    "lxml",
     "packaging",
 ]
 
