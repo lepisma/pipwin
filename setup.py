@@ -11,6 +11,7 @@ with open("README.rst") as readme_file:
 
 requirements = [
     "docopt",
+    "Werkzeug==0.16.1",
     "requests",
     "robobrowser",
     "pyprind",
@@ -21,7 +22,7 @@ requirements = [
 
 setup(
     name="pipwin",
-    version="0.4.6",
+    version="0.4.7",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme,
     author="lepisma",

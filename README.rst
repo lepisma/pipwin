@@ -10,7 +10,7 @@ pipwin
 .. image:: https://img.shields.io/appveyor/ci/lepisma/pipwin.svg?style=flat-square
     :target: https://ci.appveyor.com/project/lepisma/pipwin
     :alt: Build
-  
+
 .. image:: https://img.shields.io/pypi/l/pipwin.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: License
@@ -70,3 +70,12 @@ Details
   <package>``
 
 **Free software: BSD license**
+
+
+Changelog
+---------
+
+v0.4.7
+~~~~~~
+
+-  Using postman client type to overcome use of robobrowser to create package cache

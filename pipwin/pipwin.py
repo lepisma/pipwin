@@ -2,7 +2,6 @@
 import pip
 import pip._internal
 import requests
-from robobrowser import RoboBrowser
 from os.path import expanduser, join, isfile, exists
 import os
 import subprocess
@@ -12,6 +11,7 @@ from sys import version_info, executable
 from itertools import product
 import pyprind
 import js2py
+from bs4 import BeautifulSoup
 import re
 import ssl
 from requests.adapters import HTTPAdapter
@@ -33,18 +33,15 @@ except NameError:
 
 MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 
+# Added header for postman client
 HEADER = {
-    "Host": "download.lfd.uci.edu",
-    "Connection": "keep-alive",
-    "Cache-Control": "max-age=0",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2552.0 Safari/537.3",
-    "DNT": "1",
-    "Accept-Encoding": "gzip, deflate, sdch",
-    "Accept-Language": "en-US,en;q=0.8",
+  'User-Agent': 'PostmanRuntime/7.22.0',
+  'Accept': '*/*',
+  'Cache-Control': 'no-cache',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Referer': 'https://www.lfd.uci.edu/~gohlke/pythonlibs',
+  'Connection': 'keep-alive'
 }
-
 
 class DESAdapter(HTTPAdapter):
     """
@@ -77,14 +74,12 @@ def build_cache():
     -------
     Dictionary containing package details
     """
-
     data = {}
+    url = "https://www.lfd.uci.edu/~gohlke/pythonlibs"
+    response = requests.request("GET", url, headers=HEADER)
 
-    sess = requests.Session()
-    #sess.mount('https://', DESAdapter())
-
-    soup = RoboBrowser(session=sess, parser="html.parser")
-    soup.open(MAIN_URL)
+    #print(response.text.encode('utf8'))
+    soup = BeautifulSoup(response.text,features='lxml')
 
     # We mock out a little javascript environment within which to run Gohlke's obfuscation code
     context = js2py.EvalJs()
@@ -131,7 +126,7 @@ def build_cache():
             py_ver = details[2]
 
             py_ver_key = py_ver + "-" + arch
-
+            #print({py_ver_key: {pkg_ver: url}})
             if pkg in data.keys():
                 if py_ver_key in data[pkg].keys():
                     data[pkg][py_ver_key].update({pkg_ver: url})
@@ -320,7 +315,7 @@ class PipwinCache(object):
         Uninstall a package
         """
         subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement.name])
-        
+
 
 
 def refresh():
