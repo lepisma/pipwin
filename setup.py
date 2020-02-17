@@ -17,6 +17,7 @@ requirements = [
     "six",
     "js2py",
     "packaging",
+    "Werkzeug==0.16.1"
 ]
 
 setup(
