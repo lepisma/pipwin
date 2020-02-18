@@ -79,7 +79,7 @@ def build_cache():
     response = requests.request("GET", url, headers=HEADER)
 
     #print(response.text.encode('utf8'))
-    soup = BeautifulSoup(response.text,features='lxml')
+    soup = BeautifulSoup(response.text,features='html.parser')
 
     # We mock out a little javascript environment within which to run Gohlke's obfuscation code
     context = js2py.EvalJs()
