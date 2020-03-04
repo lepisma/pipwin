@@ -78,5 +78,4 @@ Changelog
 v0.4.7
 ~~~~~~
 
--  Using postman client type to overcome use of robobrowser to create package cache
--  Removed lxml dependency.
+-  Using postman client type to overcome use of robobrowser to create package cache.

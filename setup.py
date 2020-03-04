@@ -11,9 +11,7 @@ with open("README.rst") as readme_file:
 
 requirements = [
     "docopt",
-    "Werkzeug==0.16.1",
     "requests",
-    "robobrowser",
     "pyprind",
     "six",
     "js2py",

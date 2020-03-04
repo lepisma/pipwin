@@ -1,7 +1,5 @@
 wheel
-Werkzeug==0.16.1
 docopt
-robobrowser
 requests
 pyprind
 six

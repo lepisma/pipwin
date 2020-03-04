@@ -18,6 +18,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 from urllib3.util.ssl_ import create_urllib3_context
 import logging
+
 try:
     unicode
 except NameError:
@@ -35,13 +36,14 @@ MAIN_URL = "http://www.lfd.uci.edu/~gohlke/pythonlibs/"
 
 # Added header for postman client
 HEADER = {
-  'User-Agent': 'PostmanRuntime/7.22.0',
-  'Accept': '*/*',
-  'Cache-Control': 'no-cache',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Referer': 'https://www.lfd.uci.edu/~gohlke/pythonlibs',
-  'Connection': 'keep-alive'
+    "User-Agent": "PostmanRuntime/7.22.0",
+    "Accept": "*/*",
+    "Cache-Control": "no-cache",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Referer": "https://www.lfd.uci.edu/~gohlke/pythonlibs",
+    "Connection": "keep-alive",
 }
+
 
 class DESAdapter(HTTPAdapter):
     """
@@ -56,14 +58,19 @@ class DESAdapter(HTTPAdapter):
     connection is potentially vulnerable to attack!
     """
 
-    CIPHERS = 'RSA+3DES:ECDH+3DES:DH+3DES'
+    CIPHERS = "RSA+3DES:ECDH+3DES:DH+3DES"
 
     def init_poolmanager(self, connections, maxsize, block=False, *args, **kwargs):
         context = create_urllib3_context(ciphers=DESAdapter.CIPHERS)
-        kwargs['ssl_context'] = context
+        kwargs["ssl_context"] = context
         self.poolmanager = PoolManager(
-            num_pools=connections, maxsize=maxsize,
-            block=block, ssl_version=ssl.PROTOCOL_SSLv23, *args, **kwargs)
+            num_pools=connections,
+            maxsize=maxsize,
+            block=block,
+            ssl_version=ssl.PROTOCOL_SSLv23,
+            *args,
+            **kwargs
+        )
 
 
 def build_cache():
@@ -75,34 +82,33 @@ def build_cache():
     Dictionary containing package details
     """
     data = {}
-    url = "https://www.lfd.uci.edu/~gohlke/pythonlibs"
-    response = requests.request("GET", url, headers=HEADER)
+    response = requests.request("GET", MAIN_URL, headers=HEADER)
 
-    #print(response.text.encode('utf8'))
-    soup = BeautifulSoup(response.text,features='html.parser')
+    soup = BeautifulSoup(response.text, features="html.parser")
 
     # We mock out a little javascript environment within which to run Gohlke's obfuscation code
     context = js2py.EvalJs()
-    context.execute("""
+    context.execute(
+        """
     top = {location: {href: ''}};
     location = {href: ''};
     function setTimeout(f, t) {
         f();
     };
-    """)
+    """
+    )
 
     # We grab Gohlke's code and evaluate it within py2js
-    dl_function = re.search(r'function dl.*\}', soup.find("script").text).group(0)
+    dl_function = re.search(r"function dl.*\}", soup.find("script").text).group(0)
     context.execute(dl_function)
 
     links = soup.find(class_="pylibs").find_all("a")
     for link in links:
         if link.get("onclick") is not None:
             # Evaluate the obfuscation javascript, store the result (squirreled away within location.href) into url
-            regex_result = re.search(r'dl\(.*\)', link.get("onclick"))
+            regex_result = re.search(r"dl\(.*\)", link.get("onclick"))
             if regex_result is None:
-                logger.info(u'Skip %s (wrong link format)' %
-                            unicode(link.string))
+                logger.info(u"Skip %s (wrong link format)" % unicode(link.string))
                 continue
             context.execute(regex_result.group(0))
             url = context.location.href
@@ -113,11 +119,10 @@ def build_cache():
 
             # Not using EXEs and ZIPs
             if len(details) != 5:
-                logger.info(u'Skip %s (wrong name format)' %
-                            unicode(link.string))
+                logger.info(u"Skip %s (wrong name format)" % unicode(link.string))
                 continue
             else:
-                logger.debug(u'Add %s' % unicode(link.string))
+                logger.debug(u"Add %s" % unicode(link.string))
             # arch = win32 / win_amd64 / any
             arch = details[4]
             arch = arch.split(".")[0]
@@ -126,7 +131,7 @@ def build_cache():
             py_ver = details[2]
 
             py_ver_key = py_ver + "-" + arch
-            #print({py_ver_key: {pkg_ver: url}})
+            # print({py_ver_key: {pkg_ver: url}})
             if pkg in data.keys():
                 if py_ver_key in data[pkg].keys():
                     data[pkg][py_ver_key].update({pkg_ver: url})
@@ -136,8 +141,7 @@ def build_cache():
                 data[pkg] = {py_ver_key: {pkg_ver: url}}
         else:
             if link.string:
-                logger.debug(u'Skip %s (missing link)' %
-                             unicode(link.string))
+                logger.debug(u"Skip %s (missing link)" % unicode(link.string))
     return data
 
 
@@ -205,10 +209,11 @@ class PipwinCache(object):
             self.data = build_cache()
 
             with open(self.cache_file, "w") as fp:
-                fp.write(json.dumps(self.data,
-                                    sort_keys=True,
-                                    indent=4,
-                                    separators=(",", ": ")))
+                fp.write(
+                    json.dumps(
+                        self.data, sort_keys=True, indent=4, separators=(",", ": ")
+                    )
+                )
 
             print("Done")
 
@@ -246,7 +251,9 @@ class PipwinCache(object):
         return [False, found]
 
     def _get_url(self, requirement):
-        versions = list(requirement.specifier.filter(self.sys_data[requirement.name].keys()))
+        versions = list(
+            requirement.specifier.filter(self.sys_data[requirement.name].keys())
+        )
         if not versions:
             raise ValueError("Could not satisfy requirement %s" % (str(requirement)))
         return self.sys_data[requirement.name][max(versions)]
@@ -307,15 +314,14 @@ class PipwinCache(object):
         Install a package
         """
         wheel_file = self.download(requirement)
-        subprocess.check_call([executable, '-m', 'pip', 'install',  wheel_file])
+        subprocess.check_call([executable, "-m", "pip", "install", wheel_file])
         os.remove(wheel_file)
 
     def uninstall(self, requirement):
         """
         Uninstall a package
         """
-        subprocess.check_call([executable, '-m', 'pip', 'uninstall',  requirement.name])
-
+        subprocess.check_call([executable, "-m", "pip", "uninstall", requirement.name])
 
 
 def refresh():
