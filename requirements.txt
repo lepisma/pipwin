@@ -1,6 +1,7 @@
 wheel
 docopt
 requests
+beautifulsoup4
 pyprind
 six
 js2py

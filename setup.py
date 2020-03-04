@@ -14,6 +14,7 @@ requirements = [
     "requests",
     "pyprind",
     "six",
+    "beautifulsoup4",
     "js2py",
     "packaging",
 ]
