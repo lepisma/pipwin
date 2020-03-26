@@ -14,6 +14,7 @@ import js2py
 from bs4 import BeautifulSoup
 import re
 import ssl
+from pySmartDL import SmartDL
 from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 from urllib3.util.ssl_ import create_urllib3_context
@@ -265,12 +266,6 @@ class PipwinCache(object):
             os.makedirs(pipwin_dir)
         return pipwin_dir
 
-    def _get_progress_bar(self, length, chunk):
-        bar = pyprind.ProgBar(int(length) / chunk)
-        if int(length) < chunk:
-            return None
-        return bar
-
     def _download(self, requirement, dest):
         url = self._get_url(requirement)
         wheel_name = url.split("/")[-1]
@@ -291,19 +286,8 @@ class PipwinCache(object):
             print("File " + wheel_file + " already exists")
             return wheel_file
 
-        res = requests.get(url, headers=HEADER, stream=True)
-
-        length = res.headers.get("content-length")
-        chunk = 1024
-
-        bar = self._get_progress_bar(length, chunk)
-
-        with open(wheel_file, "wb") as wheel_handle:
-            for block in res.iter_content(chunk_size=chunk):
-                wheel_handle.write(block)
-                wheel_handle.flush()
-                if bar is not None:
-                    bar.update()
+        obj = SmartDL(url, dest)
+        obj.start()
         return wheel_file
 
     def download(self, requirement, dest=None):
