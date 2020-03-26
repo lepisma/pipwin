@@ -6,4 +6,3 @@ pyprind
 six
 js2py
 packaging
-pySmartDL
