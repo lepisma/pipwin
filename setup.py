@@ -17,11 +17,12 @@ requirements = [
     "beautifulsoup4",
     "js2py",
     "packaging",
+    "pySmartDL",
 ]
 
 setup(
     name="pipwin",
-    version="0.4.7",
+    version="0.4.8",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme,
     author="lepisma",

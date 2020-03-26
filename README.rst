@@ -75,7 +75,14 @@ Details
 Changelog
 ---------
 
+v0.4.8
+~~~~~~
+
+-  Using pySmartDL to handle download and install of packages.
+-  Removed progress bar and streaming downloader
+
 v0.4.7
 ~~~~~~
 
 -  Using postman client type to overcome use of robobrowser to create package cache.
+
