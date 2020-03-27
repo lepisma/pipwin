@@ -30,10 +30,11 @@ from packaging.requirements import Requirement
 
 def _package_names(args):
     if args["--file"]:
-        with open(args["--file"], 'r') as fid:
+        with open(args["--file"], 'rt') as fid:
             for package in fid.readlines():
+                package = package.strip()
                 if package and not package.startswith('#'):
-                    yield Requirement(package.strip())
+                    yield Requirement(package)
     elif not args["<package>"]:
         print("Provide a package name")
         sys.exit(0)
