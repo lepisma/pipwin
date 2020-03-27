@@ -1,0 +1,4 @@
+;; -*- mode: emacs-lisp -*-
+
+(("./pipwin/__init__.py" . "^__version__ = \"\\(.*?\\)\"")
+ ("./setup.py" . "version ?= ?\"\\(.*?\\)\""))
