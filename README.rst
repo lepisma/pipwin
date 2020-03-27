@@ -75,14 +75,19 @@ Details
 Changelog
 ---------
 
+v0.4.9
+~~~~~~
+
+- More robust whitespace handling in requirement parsing.
+
 v0.4.8
 ~~~~~~
 
--  Using PySmartDL to handle download and install of packages.
--  Removed progress bar and streaming downloader blocks now handled by PySmartDL.
+- Using PySmartDL to handle download and install of packages.
+- Removed progress bar and streaming downloader blocks now handled by PySmartDL.
 
 v0.4.7
 ~~~~~~
 
--  Using postman client type to overcome use of robobrowser to create package cache.
-
+- Using postman client type to overcome use of robobrowser to create package
+   cache.
