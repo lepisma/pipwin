@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import pip
-import sys
 import pip._internal
 import requests
 from os.path import expanduser, join, isfile, exists
@@ -101,10 +100,7 @@ def build_cache():
     )
 
     # We grab Gohlke's code and evaluate it within py2js
-    if sys.version_info[0]==2:
-        dl_function = re.search(r"function dl.*\}", soup.find("script").text).group(0)
-    elif sys.version_info[0]==3:
-        dl_function = re.search(r"function dl.*\}", soup.find("script").string).group(0)
+    dl_function = re.search(r"function dl.*\}", soup.find("script").string).group(0)
     context.execute(dl_function)
 
     links = soup.find(class_="pylibs").find_all("a")

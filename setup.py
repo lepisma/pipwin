@@ -14,7 +14,7 @@ requirements = [
     "requests",
     "pyprind",
     "six",
-    "beautifulsoup4",
+    "beautifulsoup4>=4.9.0",
     "js2py",
     "packaging",
     "pySmartDL==1.2.4;python_version<'3.4'",
