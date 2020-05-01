@@ -75,6 +75,12 @@ Details
 Changelog
 ---------
 
+v0.5.0
+~~~~~~
+
+- Handles text vs string parsing for beautifulsoup4 for python2 vs python3.
+- Fixes [issue 43](https://github.com/lepisma/pipwin/issues/43)
+
 v0.4.9
 ~~~~~~
 

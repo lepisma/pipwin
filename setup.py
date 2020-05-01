@@ -14,7 +14,7 @@ requirements = [
     "requests",
     "pyprind",
     "six",
-    "beautifulsoup4",
+    "beautifulsoup4>=4.9.0",
     "js2py",
     "packaging",
     "pySmartDL==1.2.4;python_version<'3.4'",
@@ -23,7 +23,7 @@ requirements = [
 
 setup(
     name="pipwin",
-    version="0.4.9",
+    version="0.5.0",
     description="pipwin installs compiled python binaries on windows provided by Christoph Gohlke",
     long_description=readme,
     author="lepisma",
