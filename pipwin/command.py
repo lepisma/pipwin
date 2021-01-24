@@ -64,6 +64,10 @@ def main():
     # Warn if not on windows
     if platform.system() != "Windows":
         warn("Found a non Windows system. Package installation might not work.")
+    
+    # Sets the proxy
+    if args['--proxy']:
+        pipwin.set_proxy(args['--proxy'])
 
     # Handle refresh
     if args["refresh"]:
