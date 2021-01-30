@@ -3,12 +3,12 @@
 Gohlke
 
 Usage:
-  pipwin install (<package> | [-r=<file> | --file=<file>])
+  pipwin install (<package> | [-r=<file> | --file=<file>]) [--proxy=<proxy>]
   pipwin uninstall <package>
-  pipwin download (<package> | [-r=<file> | --file=<file>]) [-d=<dest> | --dest=<dest>]
-  pipwin search <package>
+  pipwin download (<package> | [-r=<file> | --file=<file>]) [-d=<dest> | --dest=<dest>] [--proxy=<proxy>]
+  pipwin search <package> [--proxy=<proxy>]
   pipwin list
-  pipwin refresh [--log=<log>]
+  pipwin refresh [--log=<log>] [--proxy=<proxy>]
   pipwin (-h | --help)
   pipwin (-v | --version)
 
@@ -17,6 +17,7 @@ Options:
   -v --version             Show version.
   -r=<file> --file=<file>  File with list of package names.
   -d=<dest> --dest=<dest>  Download packages into <dest>.
+  --proxy=<proxy>          Uses the specified proxy
 """
 
 from docopt import docopt
@@ -63,6 +64,10 @@ def main():
     # Warn if not on windows
     if platform.system() != "Windows":
         warn("Found a non Windows system. Package installation might not work.")
+    
+    # Sets the proxy
+    if args['--proxy']:
+        pipwin.set_proxy(args['--proxy'])
 
     # Handle refresh
     if args["refresh"]:

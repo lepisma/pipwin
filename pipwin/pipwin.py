@@ -307,6 +307,17 @@ class PipwinCache(object):
         """
         subprocess.check_call([executable, "-m", "pip", "uninstall", requirement.name])
 
+def set_proxy(proxy):
+    """
+    Set a proxy to the environment
+    """
+    # PySmartDL ignores http_proxy, but it is used on build_cache()
+    # urllib.request ignores lowercase proxy env variable if user also have a REQUEST_METHOD env var
+    # To avoid similar issues, added all cases
+    os.environ['http_proxy'] = proxy 
+    os.environ['HTTP_PROXY'] = proxy
+    os.environ['https_proxy'] = proxy
+    os.environ['HTTPS_PROXY'] = proxy
 
 def refresh():
     """
