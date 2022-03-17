@@ -20,8 +20,6 @@ unofficial python package binaries for windows provided by Christoph Gohlke here
 `http://www.lfd.uci.edu/~gohlke/pythonlibs/
 <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_
 
-**Version 0.2.X changes the structure of cache file. Make sure to run `pipwin refresh` if updated.**
-
 QuickStart
 ^^^^^^^^^^
 
