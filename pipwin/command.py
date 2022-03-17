@@ -35,7 +35,7 @@ def _package_names(args):
             for package in fid.readlines():
                 package = package.strip()
                 if package and not package.startswith('#'):
-                    yield Requirement(package)
+                    yield Requirement(package.lower())
     elif not args["<package>"]:
         print("Provide a package name")
         sys.exit(0)
