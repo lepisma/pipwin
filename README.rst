@@ -15,6 +15,8 @@ pipwin
     :target: https://pypi.python.org/pypi/pipwin/
     :alt: License
 
+This tool is not being maintained now and the repository is archived. See `this issue <https://github.com/lepisma/pipwin/issues/64#issuecomment-1596034715>`_ for more details.
+
 **pipwin** is a complementary tool for **pip** on Windows. **pipwin** installs
 unofficial python package binaries for windows provided by Christoph Gohlke here
 `http://www.lfd.uci.edu/~gohlke/pythonlibs/
